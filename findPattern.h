@@ -45,7 +45,9 @@ std::vector<std::string> nameOfFilesWithPattern(std::string pattern);
  *              If option -n is activated (displays the number of the line before the line itself)
  * @return Vector of strings with the results
  */
-std::vector<std::string> nameOfFilesWithPattern(std::string fileDir, std::string pattern, bool i, bool n);
+std::vector<std::string> nameOfFilesWithPattern(std::string fileDir, std::string pattern, bool n);
 
+void printLines(const std::vector<std::string> &lines);
 
+//(PATH -r ou -l/SEM PATH) NUMERO DA LINHA
 #endif /* _FINDPATTERN_H_ */

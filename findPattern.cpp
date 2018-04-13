@@ -6,6 +6,7 @@
 
 #include "macros.h"
 #include "findPattern.h"
+#include "searchDir.h"
 
 using namespace std;
 
@@ -52,12 +53,18 @@ vector<string> nameOfFilesWithPattern(string pattern)
 }
 */
 
-vector<string> nameOfFilesWithPattern(string fileDir, string pattern, bool optionI, bool optionN)
+void printLines(const vector<string> &lines)
+{
+    for (auto &line : lines)
+        cout << line << endl;
+}
+
+vector<string> nameOfFilesWithPattern(string fileDir, string pattern, bool optionN)
 {
     //read file wanted
     vector<string> fileLines = readFile(fileDir);
     vector<string> linesWithPattern;
-    linesWithPattern.push_back(fileDir);
+    //linesWithPattern.push_back(fileDir);
 
     //for each line of the document
     for (unsigned int i = 0; i < fileLines.size(); i++)
@@ -65,16 +72,16 @@ vector<string> nameOfFilesWithPattern(string fileDir, string pattern, bool optio
         //check if that line in particular has the pattern
         if (fileLines.at(i).find(pattern) != string::npos)
         {
-            string result;
+            string result = fileDir + ":";
             if (optionN)
             {
-                result = to_string(i+1);
+                result += to_string(i + 1);
                 result += ": ";
                 result += fileLines.at(i);
             }
 
             else //dont have the line
-                result = fileLines.at(i);
+                result += fileLines.at(i);
 
             linesWithPattern.push_back(result);
         }

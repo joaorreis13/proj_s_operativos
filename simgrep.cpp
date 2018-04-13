@@ -5,18 +5,37 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <signal.h>
+#include <sys/wait.h>
 
 #include "macros.h"
 #include "findPattern.h"
+#include "searchDir.h"
 
 using namespace std;
 
-void printAnswer(vector<string> answer)
+void sigint_handler(int sig)
 {
-    for (unsigned int i = 0; i < answer.size(); i++)
+    char c;
+    cout << endl
+         << "Are you sure you want to termiante?" << endl;
+    c = getchar();
+
+    if (c == 'y' || c == 'Y')
     {
-        cout << answer.at(i) << endl;
+        cout << "Program terminated" << endl;
+        exit(0);
     }
+    else if (c == 'n' || c == 'N')
+    {
+        return;
+    }
+    else
+    {
+        cout << "Char not recognized" << endl;
+        sigint_handler(SIGINT);
+    }
+    return;
 }
 
 bool isDirectory(string dir)
@@ -51,19 +70,23 @@ bool isValidOption(char option)
            option == 'c' || option == 'w' || option == 'r';
 }
 
-bool hasCharOption(vector<char> options, char option)
-{
-    for(unsigned int i = 0; i < options.size();i++)
-    {
-        if(options[i] == option)
-        return true;
-    }
-    return false;
-}
-
 //manage options and call each function accodingly
 int main(int argc, char *argv[])
 {
+    cout << "Possible test cases:" << endl;
+    cout << "simgrep -n -r pattern dir" << endl;
+    cout << "simgrep -n pattern dir/file" << endl;
+    cout << "simgrep -w -n pattern file" << endl;
+    cout << "simgrep -w pattern file" << endl;
+    cout << "[default:] simgrep pattern dir/file" << endl;
+
+    //setting up the signal
+    struct sigaction action;
+    action.sa_handler = sigint_handler;
+    sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;
+    sigaction(SIGINT, &action, NULL);
+
     //variables
     //bool recursive = false; // -r
     //bool hasDir = false;    // has directory
@@ -112,12 +135,39 @@ int main(int argc, char *argv[])
     //checking if fileDir is a file
     if (isDirectory(fileDir))
     {
+        cout << "found directory" << endl;
+
+        int status = 0;
+        int pid = fork();
+
+        if (pid == 0)
+        {
+            searchDir(fileDir, options, pattern);
+            exit(0);
+        }
+        else
+        {
+            wait(&status);
+            exit(status);
+        }
     }
+    else
+    {
+        if (hasCharOption(options, 'w'))
+        {
+            FILE *fp;
+            fp = fopen(fileDir.c_str(), "r");
+            char **outcome = findWord_w(fp, pattern, hasCharOption(options, 'n'));
 
-    //call function accordingly
-    vector<string> answer = nameOfFilesWithPattern(fileDir, pattern, hasCharOption(options,'i'), hasCharOption(options,'n'));
-
-    printAnswer(answer);
+            for (int i = 0; i < sizeof(outcome) - 1; i++)
+                printf("%s", outcome[i]);
+        }
+        else
+        {
+            vector<string> answer = nameOfFilesWithPattern(fileDir, pattern, hasCharOption(options, 'n'));
+            printLines(answer);
+        }
+    }
 
     return 0;
 }
