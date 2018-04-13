@@ -43,17 +43,21 @@ int numberOfLinesWithPattern(const vector<string> &fileLines, string pattern)
     }
     return counter;
 }
-
+/*
 vector<string> nameOfFilesWithPattern(string pattern)
 {
     //TODO
     vector<string> linesWithPattern;
     return linesWithPattern;
 }
+*/
 
-vector<string> nameOfFilesWithPattern(const vector<string> &fileLines, string pattern, bool optionI, bool optionN)
+vector<string> nameOfFilesWithPattern(string fileDir, string pattern, bool optionI, bool optionN)
 {
+    //read file wanted
+    vector<string> fileLines = readFile(fileDir);
     vector<string> linesWithPattern;
+    linesWithPattern.push_back(fileDir);
 
     //for each line of the document
     for (unsigned int i = 0; i < fileLines.size(); i++)

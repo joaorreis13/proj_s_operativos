@@ -22,7 +22,7 @@ std::vector<std::string> readFile(std::string fileName);
  *              Pattern that is to find in the file
  * @return Number of lines with pattern in the file
  */
-int numberOfLinesWithPattern(const std::vector<std::string> &fileLines, std::string pattern);
+//int numberOfLinesWithPattern(const std::vector<std::string> &fileLines, std::string pattern);
 
 //NOTE: THIS FUNCITON IS TO BE CALLED IF -l OPTION IS SENT
 /**
@@ -35,8 +35,8 @@ std::vector<std::string> nameOfFilesWithPattern(std::string pattern);
 
 /**
  * Searches in the file for a pattern
- * @param fileLines
- *              File in format of vector of strings
+ * @param fileDir
+ *              String with directory
  * @param pattern
  *              Pattern that is beeing looked for
  * @param i
@@ -45,7 +45,7 @@ std::vector<std::string> nameOfFilesWithPattern(std::string pattern);
  *              If option -n is activated (displays the number of the line before the line itself)
  * @return Vector of strings with the results
  */
-std::vector<std::string> nameOfFilesWithPattern(const std::vector<std::string> &fileLines, std::string pattern, bool i, bool n);
+std::vector<std::string> nameOfFilesWithPattern(std::string fileDir, std::string pattern, bool i, bool n);
 
 
 #endif /* _FINDPATTERN_H_ */
